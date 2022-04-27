@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html 
+
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <h:head>
+        <title>Mantenimiento de Productos</title>
+        <f:event listener="#{ProductoC.listar()}" type="preRenderView"/>
+
+    </h:head>
+    <center>
+        <p:growl showDetail="true" id="messages">
+            <p:autoUpdate/>
+        </p:growl>
+    </center>
+
+    <h:body>
+
+        <h:form> 
+            <div class="card">
+                <p:tabMenu activeIndex="#{param.i}">
+                    <p:menuitem value="Home" outcome="index" icon="pi pi-fw pi-home">
+                        <f:param name="i" value="0"/>
+                    </p:menuitem>
+                    <p:menuitem value="Ubigeo" outcome="Cliente" icon="pi pi-fw pi-calendar">
+                        <f:param name="i" value="1"/>
+                    </p:menuitem>
+                    <p:menuitem value="Edit" outcome="Empleado.xhtml" icon="pi pi-fw pi-pencil">
+                        <f:param name="i" value="2"/>
+                    </p:menuitem>
+                    <p:menuitem value="Documentation" outcome="index" icon="pi pi-fw pi-file">
+                        <f:param name="i" value="3"/>
+                    </p:menuitem>
+                    <p:menuitem value="Settings" outcome="index" icon="pi pi-fw pi-cog">
+                        <f:param name="i" value="4"/>
+                    </p:menuitem>
+                </p:tabMenu>
+            </div>
+        </h:form>
+
+        <center>
+            <h:form id="frmRegPro">
+                <p:panelGrid columns="2">
+
+                    <p:outputLabel value ="Nombre"/>
+                    <p:inputText  placeholder="Nombre del producto" value="#{ProductoC.producto.NOMPRO}">
+                        <p:keyFilter regEx="/[a-zA-Z]/"/>
+                    </p:inputText>
+
+                    <p:outputLabel value ="Precio"/>
+                    <p:inputNumber  placeholder="00.00" value="#{ProductoC.producto.PREPRO}" maxlength="5">
+                        <p:keyFilter regEx="/[1-9]/"/>
+                    </p:inputNumber>
+
+                    <p:outputLabel value ="Descripcion"/>
+                    <p:inputText placeholder="descripcion del producto" value="#{ProductoC.producto.DESPRO}">
+                        <p:keyFilter regEx="/[a-zA-Z]/"/>
+                    </p:inputText>
+
+                    <p:outputLabel value ="Estado"/>
+                    <p:inputText  placeholder="Activo o inactivo" value="#{ProductoC.producto.ESTPRO}" maxlength="1">
+                        <p:keyFilter regEx="/[A_I]/"/>
+                    </p:inputText>
+                    <p:commandButton  action ="#{ProductoC.registrar()}" value="Registrar" update=":tablaProducto"/>
+                </p:panelGrid>
+            </h:form>
+        </center>
+        <!--            Fin del Formulario Producto-->
+        <p:spacer height="0"/>
+
+
+        <!--            listado de Producto     -->
+        <center>
+            <h:form id="tablaProducto"> 
+
+                <p:dataTable id="tablaPro" var="lista" value="#{ProductoC.lstProducto}" rowKey="#{lista.IDPRO}" rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records" rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Listado de Productos
+                    </f:facet>
+                    <p:column headerText="Id" filterBy="#{lista.IDPRO}">
+                        <h:outputText value="#{lista.IDPRO}" />
+                    </p:column>
+                    <p:column headerText="Nombre" filterBy="#{lista.NOMPRO}">
+                        <h:outputText value="#{lista.NOMPRO}" />
+                    </p:column>
+                    <p:column headerText="Precio" filterBy="#{lista.PREPRO}">
+                        <h:outputText value="#{lista.PREPRO}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" filterBy="#{lista.DESPRO }">
+                        <h:outputText value="#{lista.DESPRO}" />
+                    </p:column>
+                    <!--                <p:column headerText="Estado">
+                                        <h:outputText value="#{lista.ESTPRO}" />
+                                    </p:column>-->
+
+                    <p:column headerText="Modificar" style="width: 40px">
+                        <p:commandButton icon="pi pi-pencil"
+                                         oncomplete="PF('wdlgDatos').show();"
+                                         update=":frmModificar2">
+                            <f:setPropertyActionListener value="#{lista}" target="#{ProductoC.producto}"/>
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="Eliminar" style="width: 40px">
+                        <p:commandButton icon="pi pi-trash" actionListener="#{ProductoC.eliminar()}"
+                                         update="tablaProducto" >
+                            <p:confirm header="Confirmacion" message="¿Desas Eliminar?" icon="ui-icon-alert"/>
+                            <p:tooltip trackMouse="true"/>
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        </p:confirmDialog>
+                    </p:column>
+                    
+                    <f:facet name="footer">
+                      <center>  EN TOTAL HAY #{fn:length(ProductoC.lstProducto)} REGISTROS.</center>
+                    </f:facet>              
+                    
+                </p:dataTable>
+            </h:form>
+        </center>
+
+        <p:dialog header="Datos del Producto" widgetVar="wdlgDatos" id="dlgDatos">
+            <h:form id="frmModificar2">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{ProductoC.producto.NOMPRO}">
+                        <p:keyFilter regEx="/[a-zA-Z] //"/>
+                    </p:inputText>           
+                    <p:outputLabel value="Precio"/>
+                    <p:inputNumber value="#{ProductoC.producto.PREPRO}" maxlength="5" >
+                        <p:keyFilter regEx="/[1-9]/"/>
+                    </p:inputNumber>
+                    <p:outputLabel value="Descripcion"/>
+                    <p:inputText value="#{ProductoC.producto.DESPRO}">
+                        <p:keyFilter regEx="/[a-zA-Z] //"/>
+                    </p:inputText>
+ 
+                    <p:commandButton  id="btnModificar"  value="Modificar" actionListener="#{ProductoC.modificar()}"
+                                      update="tablaProducto:tablaPro" 
+                                      oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();">
+                        <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                    </p:commandButton>  
+                    <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+    </h:body>
+    <h:outputScript library="js" name="..//resources/js/spanishLocales.js"/>
+</html>

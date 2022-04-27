@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html 
+
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <h:head>
+        <title>Cliente</title>
+        <f:event listener="#{ClienteC.listar()}" type="preRenderView"/>
+
+    </h:head>
+    <center>
+        <p:growl showDetail="true" id="messages">
+            <p:autoUpdate/>
+        </p:growl>
+    </center>
+
+    <h:body>
+
+
+        <h:form> 
+            <div class="card">
+                <p:tabMenu activeIndex="#{param.i}">
+                    <p:menuitem value="Producto" outcome="index.xhtml" icon="pi pi-fw pi-home">
+                        <f:param name="i" value="0"/>
+                    </p:menuitem>
+                    <p:menuitem value="Cliente" outcome="Cliente.xhtml" icon="pi pi-fw pi-calendar">
+                        <f:param name="i" value="1"/>
+                    </p:menuitem>
+                    <p:menuitem value="Empleado" outcome="Empleado.xhtml" icon="pi pi-fw pi-pencil">
+                        <f:param name="i" value="2"/>
+                    </p:menuitem>
+
+                </p:tabMenu>
+            </div>
+        </h:form>
+        <center>
+            <h:form>
+                <h1 style="color:black; font-weight:bold; font-size:40px">Cliente</h1>              
+            </h:form>
+        </center>
+
+        <center>
+            <h:form id="frmRegPro">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value ="Nombre"/>
+                    <p:inputText  placeholder="Nombre del Cliente" value="#{ClienteC.cliente.NOMCLI}">
+                        <p:keyFilter regEx="/[a-zA-Z_ ]/"/>
+                    </p:inputText>
+                    <p:outputLabel value ="Apellido"/>
+                    <p:inputText  placeholder="Apellido del Cliente" value="#{ClienteC.cliente.APECLI}">
+                        <p:keyFilter regEx="/[a-zA-Z_ ]/"/>
+                    </p:inputText>
+                    <p:outputLabel value ="DNI"/>
+                    <p:inputNumber placeholder="DNI de Cliente" value="#{ClienteC.cliente.DNICLI}" maxlength="8">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber>
+                    <p:outputLabel value ="Telefono"/>
+                    <p:inputNumber  placeholder="Telefono de cliente" value="#{ClienteC.cliente.TELCLI}" maxlength="9">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber>
+                    <p:outputLabel value ="Email"/>
+                    <p:inputText  placeholder="Email de Cliente" value="#{ClienteC.cliente.EMACLI}" maxlength="1">
+                        <p:keyFilter regEx="/[a-zA-Z_ -@]/"/>
+                    </p:inputText>
+                    <p:outputLabel value ="Estado"/>
+                    <p:inputText  placeholder="Estadp de cliente" value="#{ClienteC.cliente.ESTCLI}">
+                        <p:keyFilter regEx="/[A_I]/"/>
+                    </p:inputText>
+                    <p:outputLabel value ="Ubigeo"/>
+                    <p:inputNumber  placeholder="Ubigep" value="#{ClienteC.cliente.CODUBI}">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber >
+                   
+                </p:panelGrid>
+                    
+                    
+                    <p:commandButton  action ="#{ClienteC.registrar()}" value="Registrar" update=":tablaCliente"/>
+            </h:form>
+
+        </center>
+
+        <p:spacer height="0"/>
+
+        <center>
+            <h:form id="tablaCliente" > 
+
+                <p:dataTable id="tablaCli" var="lista" value="#{Cliente.lstCliente}" rowKey="#{lista.IDECLI}" selectionMode="single"
+                             editable="true" editMode="cell" widgetVar="cellCars" rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                             rowsPerPageTemplate="5,10,15" style="width: 80%; border-style: none;">
+
+                    <f:facet name="header">
+                        <div style="float:right">
+                            <p:commandButton value="PDF" icon="pi pi-file-pdf" styleClass="rounded-button blue" style="font-weight:bold">
+                                <p:dataExporter type="pdf" target=":tablaCliente:tablaCli" fileName="Lista de Cliente_PDF" />
+                            </p:commandButton>
+                            <p:commandButton value="EXCEL" icon="pi pi-file-excel" styleClass="rounded-button blue" style="font-weight:bold">
+                                <p:dataExporter type="xls" target=":tablaCliente:tablaCli" fileName="Lista de Cliente_EXCEL" />
+                            </p:commandButton>
+                        </div>
+                    </f:facet>
+
+                    <f:facet name= "header"><center style="color: black; font-weight:bold; font-size: 30px">LISTA DE Cliente</center></f:facet>
+
+
+                    <p:column  headerText="Id"  filterBy="#{lista.IDCLI}" style="width:10px; " >
+                        <h:outputText value="#{lista.IDCLI}" />
+                    </p:column>  
+
+                    <p:column headerText="Nombre" filterBy="#{lista.NOMCLI}" style="width:50px;">
+                        <h:outputText value="#{lista.NOMCLI}"/>
+                    </p:column>
+                    <p:column headerText="Apellido" filterBy="#{lista.APECLI}" style="width:35px;">
+                        <h:outputText value="#{lista.APECLI}" />
+                    </p:column>
+                    <p:column headerText="DNI" filterBy="#{lista.DNICLI}" style="width:30px;">
+                        <h:outputText value="#{lista.DNICLI}"  />
+                    </p:column>
+                    <p:column headerText="Telefono" filterBy="#{lista.TELCLI}" style="width:30px;">
+                        <h:outputText value="#{lista.TELCLI}"  />
+                    </p:column>
+                    <p:column headerText="Email" filterBy="#{lista.EMACLI}" style="width:30px;">
+                        <h:outputText value="#{lista.EMACLI}"  />
+                    </p:column>
+                    <p:column headerText="Estado" filterBy="#{lista.ESTCLI}" style="width:30px;">
+                        <h:outputText value="#{lista.ESTCLI}"  />
+                    </p:column>
+                    <p:column headerText="Ubigeo" filterBy="#{lista.CODUBI}" style="width:30px;">
+                        <h:outputText value="#{lista.CODUBI}"  />
+                    </p:column>
+                    
+                    <p:column headerText="Modificar" style="width: 20px" exportable="false" >
+                       <p:commandButton oncomplete="PF('wdlgDatos').show();" icon="pi pi-pencil"  update=":frmModificar2">
+                                <f:setPropertyActionListener value="#{lista}" target="#{ClienteC.cliente}" />
+                            </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="Eliminar" style="width: 20px" exportable="false">
+                        <p:commandButton icon="pi pi-trash" actionListener="#{ClienteC.eliminar(lista)}"
+                                         update="tablaCliente" >
+                            <p:confirm header="Confirmacion" message="¿Desas Eliminar?" icon="ui-icon-alert"/>
+                            <p:tooltip trackMouse="true"/>
+                        </p:commandButton>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        </p:confirmDialog>
+                    </p:column>
+                    <f:facet name="footer">
+                        <center> EN TOTAL HAY #{fn:length(ClienteC.lstCliente)} REGISTROS.</center> 
+                    </f:facet> 
+                </p:dataTable>
+
+                <p:contextMenu for="tablaCli">
+                    <p:menuitem value="Modificar" icon="pi pi-refresh" oncomplete="PF('wdlgDatos').show()" update=":frmModificar2"/>
+                </p:contextMenu>
+
+                <p:confirmDialog global="true">
+                    <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                    <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
+            </h:form>
+        </center>
+
+        <p:dialog header="Datos del Cliente" widgetVar="wdlgDatos" id="dlgDatos">
+            <h:form id="frmModificar2">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{ClienteC.cliente.NOMCLI}">
+                        <p:keyFilter regEx="/[a-zA-Z]/"/>
+                    </p:inputText>           
+                    <p:outputLabel value="Apellido"/>
+                    <p:inputText value="#{ClienteC.cliente.APECLI}">
+                        <p:keyFilter regEx="/[a-zA-Z]/"/>
+                    </p:inputText>
+                    <p:outputLabel value="DNI"/>
+                    <p:inputNumber value="#{ClienteC.cliente.DNICLI}">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber>
+                    <p:outputLabel value="Telefono"/>
+                    <p:inputNumber value="#{ClienteC.cliente.TELCLI}">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber>
+                    <p:outputLabel value="Email"/>
+                    <p:inputText value="#{ClienteC.cliente.EMACLI}">
+                        <p:keyFilter regEx="/[a-zA-Z]/"/>
+                    </p:inputText>
+                    <p:outputLabel value="Estadp"/>
+                    <p:inputText value="#{ClienteC.cliente.ESTCLI}">
+                        <p:keyFilter regEx="/[A_I]/"/>
+                    </p:inputText>
+                     <p:outputLabel value="UBIGEO"/>
+                    <p:inputNumber value="#{ClienteC.cliente.CODUBI}">
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputNumber>                   
+                    
+
+                    <p:commandButton value="Modificar" icon="pi pi-refresh" actionListener="#{ClienteC.modificar()}" update=":tablaCliente:tablaCli" oncomplete="PF('wdlgDatos').hide()">
+                        <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+
+        <h:form>
+            <p:confirmDialog global="true">
+                <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+    </h:body>
+
+</html>
